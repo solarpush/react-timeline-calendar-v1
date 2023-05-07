@@ -27,6 +27,10 @@
     "react-dom": "^18.0.0",
     "sass": "^1.45.2"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solarpush/react-timeline-calendar-v1"
+},
   "devDependencies": {
     "@babel/cli": "^7.21.5",
     "@babel/core": "^7.21.8",
