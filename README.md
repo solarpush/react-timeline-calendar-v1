@@ -2,7 +2,7 @@
 
 <p>Take 2 parameters : "list" a table of object with "name" key
 and rdvTable a table of object with id, rdvStart, rdvEnd, assign, name, cp, keys . </p>
-
+ 
  
 ``` shell 
 npm i react-timeline-calendar-v1
