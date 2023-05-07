@@ -1,0 +1,63 @@
+.timeLinePaperContentContainer {
+    padding: 1rem;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    .timeLinePaperContent {
+      padding: 1rem;
+      justify-content: center;
+      display: flex;
+      .listContent {
+        width: 15%;
+        margin-right: 5px;
+        padding-top: 70px;
+        .listItem {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          :nth-child(1) {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60%;
+            height: 60%;
+            border: none;
+            border-radius: 40px 10px;
+            background: rgb(241, 253, 188);
+            color: rgb(0, 13, 48);
+            font-weight: 800;
+            font-size: large;
+          }
+        }
+      }
+      .scheduleContent {
+        width: 80%;
+        overflow-x: scroll;
+        padding: 10px;
+        .gridi {
+          display: grid;
+          .hoursIn {
+            // grid-column: span 2;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+          }
+        }
+        .hoursTop {
+          height: 60px;
+  
+          display: grid;
+  
+          .hoursInTop {
+            // grid-column: span 2;
+            height: 40px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+          }
+        }
+      }
+    }
+  }
+  
