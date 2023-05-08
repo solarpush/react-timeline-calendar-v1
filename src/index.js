@@ -33,33 +33,30 @@ const TimeLine = ({
     return times;
   }
   const hours = generateTimeList();
-
-  const [rdv, setRdv] = useState(() =>
-    rdvTable.map((rdv) => {
-      const rdvStart = moment.utc(rdv.rdvStart);
-      const rdvEnd = moment.utc(rdv.rdvEnd);
-      const quarterHour = 15 * 60 * 1000; // 15 minutes in milliseconds
-      const roundedStart = moment(
-        Math.round(+rdvStart / quarterHour) * quarterHour
-      ).format();
-      const roundedEnd = moment(
-        Math.round(+rdvEnd / quarterHour) * quarterHour
-      ).format();
-      const id = rdv.id;
-      const assign = rdv.assign;
-      const name = rdv.name;
-      const cp = rdv.cp;
-      const newTable = {
-        rdvStart: roundedStart ? roundedStart : null,
-        rdvEnd: roundedEnd ? roundedEnd : null,
-        id: id ? id : null,
-        assign: assign ? assign : null,
-        name: name ? name : null,
-        cp: cp ? cp : null,
-      };
-      return newTable;
-    })
-  );
+  const rdv = rdvTable.map((rdv) => {
+    const rdvStart = moment.utc(rdv.rdvStart);
+    const rdvEnd = moment.utc(rdv.rdvEnd);
+    const quarterHour = 15 * 60 * 1000; // 15 minutes in milliseconds
+    const roundedStart = moment(
+      Math.round(rdvStart / quarterHour) * quarterHour
+    ).format();
+    const roundedEnd = moment(
+      Math.round(rdvEnd / quarterHour) * quarterHour
+    ).format();
+    const id = rdv.id;
+    const assign = rdv.assign;
+    const name = rdv.name;
+    const cp = rdv.cp;
+    const newTable = {
+      rdvStart: roundedStart ? roundedStart : null,
+      rdvEnd: roundedEnd ? roundedEnd : null,
+      id: id ? id : null,
+      assign: assign ? assign : null,
+      name: name ? name : null,
+      cp: cp ? cp : null,
+    };
+    return newTable;
+  });
 
   const [hoursCalc, setHoursCalc] = useState(() => {
     return hours.map((hour) => moment(hour, "HH:mm").format());
@@ -281,10 +278,13 @@ const TimeLine = ({
             newDivELement.style.setProperty("z-index", 2);
           });
           newDivELement.addEventListener("mouseout", () => {
-            newDivELement.style.setProperty("z-index", 0);
+            newDivELement.style.setProperty("z-index", 1);
           });
+
           newDivELement.addEventListener("click", () => {
-            clickRdvFunction(i.id);
+            clickRdvFunction
+              ? clickRdvFunction(i.id)
+              : console.log("Arguments clickRdvFunction empty");
           });
           newDivELement.setAttribute("id", i.id + index);
           newDivELement.style.width = `${rdvWidth}px`;
@@ -311,10 +311,10 @@ const TimeLine = ({
         } else {
           const div = everCreate;
           div.addEventListener("mouseover", () => {
-            div.style.setProperty("z-index", 99);
+            div.style.setProperty("z-index", 2);
           });
           div.addEventListener("mouseout", () => {
-            div.style.setProperty("z-index", 0);
+            div.style.setProperty("z-index", 1);
           });
           const rdvWidth = (widthView / separateNumber) * timeOfRdv();
           div.style.borderRadius = radius;
@@ -344,6 +344,7 @@ const TimeLine = ({
     viewType,
     widthView,
     rowHeight,
+    rdv,
   ]);
 
   useEffect(() => {
