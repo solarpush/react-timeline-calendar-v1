@@ -30,25 +30,58 @@ const rdvTable = [
     },
   ];
 
+  //sample of function 
+  function clickRdvFunction(id) {
+    console.log(id);
+  }
+
   ```
 
   ```jsx
 <TimeLine list={list} rdvTable={rdvTable} />
+
+//optional argument : 
+// clickRdvFunction= return id of rdvTable item
+// colorSticker= string
+// colorTeam= string
+<TimeLine 
+list={list} 
+rdvTable={rdvTable} 
+clickRdvFunction={clickRdvFunction}
+colorSticker={"rgb(21, 253, 188)"}
+colorTeam={"rgb(241, 203, 18)"} />
 ```
 
 <img src="https://bnz07pap001files.storage.live.com/y4m7Ecd5KK-T7tbB7H4yX8FdozPcBF5OClPTbJuxMGKOvpVBn9REPlRgtTBs0xSvSmTKoz9ERMrREZiRBf-kJo023AYx68Itor6I-PWMpksShqzXp1evmh3ZHyLlJX4_QFuGVS6Gd_rV7TYJPxUftyjEU3HrGklF8PgE0d5XzVIhKRl6iMAGfiiXM7lU64KGuRv?width=1692&height=487&cropmode=none" />
 
+```js
+// Sample of convert function for other Data to use in component 
 
+const convertToTable = yourData.map((item) => {
+    const convert = {
+      id: item.id,
+      rdvStart: moment(item.otherKeyStart).format(),
+      rdvEnd: moment(item.otherKeyEnd).format(),
+      assign: "equipe 1",
+      name: item.lastName,
+      cp: item.address ,
+    };
+    return convert;
+  });
+
+<TimeLine list={list} rdvTable={convertToTable} />
+
+```
 <p>For next minor update add parameters: 
 <ul>
-<li >colorRdv: string </li>
-<li >colorList: string </li>
+<li >languages </li>
 <li >defaultWidthView: number </li>
 <li >defaultheightRow: number </li>
 </ul>
-You can now use the ```rdvTable[index].cp ``` for inject any text in the rdv sticker  or use empty string for useless this propriety.
+You can now use the 'cp' key for inject any text in the rdv sticker or use empty string for useless this propriety.
 </p>
 <br/>
 <h5><a href="https://playcode.io/1465220">Try it in playground </a> </h5>
 <br/>
+
 <sub>Made by Pierre Nicolas</sub>

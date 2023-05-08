@@ -16,11 +16,13 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import './_timeline.scss';
-function TimeLine ({ list, rdvTable }){
-  const clickRdvFunction = () => {
-    /// open modal fiche rdv
-  };
-
+const TimeLine = ({
+  list,
+  rdvTable,
+  clickRdvFunction,
+  colorSticker,
+  colorTeam,
+}) => {
   const [today, setToday] = useState(moment().format());
   function generateTimeList() {
     const times = [];
@@ -40,7 +42,6 @@ function TimeLine ({ list, rdvTable }){
       const roundedStart = moment(
         Math.round(+rdvStart / quarterHour) * quarterHour
       ).format();
-      console.log(roundedStart);
       const roundedEnd = moment(
         Math.round(+rdvEnd / quarterHour) * quarterHour
       ).format();
@@ -56,25 +57,10 @@ function TimeLine ({ list, rdvTable }){
         name: name ? name : null,
         cp: cp ? cp : null,
       };
-      for (const key in newTable) {
-        if (Object.hasOwnProperty.call(newTable, key)) {
-          const element = newTable[key];
-          if (element === null) {
-            console.log(`Error object rdvTable need 6 argument, sample object in table : 
-            [
-              {rdvStart: moment(any).format() or other iso,
-              rdvEnd: moment(any).format() or other iso,
-              id: string,
-              assign: string present in list.name,
-              name: string name or subject of rdv ,
-              cp: string or "" is for display in title rdv},
-            ]`);
-          }
-        }
-      }
       return newTable;
     })
   );
+
   const [hoursCalc, setHoursCalc] = useState(() => {
     return hours.map((hour) => moment(hour, "HH:mm").format());
   });
@@ -164,8 +150,9 @@ function TimeLine ({ list, rdvTable }){
     setHoursCalc(newHoursCalc);
   };
   useEffect(() => {
-    const background =
-      "linear-gradient(90deg, hsla(31, 98%, 67%, 1) 0%, hsla(36, 97%, 48%, 1) 100%)";
+    const background = colorSticker
+      ? colorSticker
+      : "linear-gradient(90deg, hsla(31, 98%, 67%, 1) 0%, hsla(36, 97%, 48%, 1) 100%)";
     const shadow = "0px 0px 5px #e8e8e8";
     const radius = "20px";
     //pour chaques rdv
@@ -297,7 +284,7 @@ function TimeLine ({ list, rdvTable }){
             newDivELement.style.setProperty("z-index", 0);
           });
           newDivELement.addEventListener("click", () => {
-            clickRdvFunction();
+            clickRdvFunction(i.id);
           });
           newDivELement.setAttribute("id", i.id + index);
           newDivELement.style.width = `${rdvWidth}px`;
@@ -541,7 +528,13 @@ function TimeLine ({ list, rdvTable }){
           {list.map((itemList, index) => (
             <div key={index}>
               <div style={{ height: `${rowHeight}px` }} className="listItem">
-                <div>{itemList.name}</div>
+                <div
+                  style={{
+                    background: colorTeam ? colorTeam : "rgb(241, 253, 188)",
+                  }}
+                >
+                  {itemList.name}
+                </div>
               </div>
               <Divider />
             </div>
