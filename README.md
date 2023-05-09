@@ -28,11 +28,24 @@ const rdvTable = [
       name: "Mme Durand",
       cp: "69870",
     },
+    {
+      id: "15513d31de55",
+      rdvStart: "2023-05-06T14:00:00+02:00",
+      rdvEnd: moment("2023-05-06T14:00:00+02:00").add(3, "h").format(),
+      assign: null,
+      name: "Mme Durand",
+      cp: "69870",
+    },
   ];
 
   //sample of function 
   function clickRdvFunction(id) {
     console.log(id);
+  }
+
+  //sample of functionAssign
+  function functionAssign(id) {
+    console.log(id)
   }
 
   ```
@@ -44,12 +57,14 @@ const rdvTable = [
 // clickRdvFunction= return id of rdvTable item
 // colorSticker= string
 // colorTeam= string
-<TimeLine 
-list={list} 
-rdvTable={rdvTable} 
-clickRdvFunction={clickRdvFunction}
-colorSticker={"rgb(21, 253, 188)"}
-colorTeam={"rgb(241, 203, 18)"} />
+<AdminTimeLine
+            list={list}
+            rdvTable={rdvTable}
+            clickRdvFunction={clickRdvFunction}
+            functionAssign={functionAssign}
+            colorSticker={"rgb(21, 253, 188)"}
+            colorTeam={"rgb(241, 203, 18)"}
+          />
 ```
 
 <img src="https://bnz07pap001files.storage.live.com/y4m7Ecd5KK-T7tbB7H4yX8FdozPcBF5OClPTbJuxMGKOvpVBn9REPlRgtTBs0xSvSmTKoz9ERMrREZiRBf-kJo023AYx68Itor6I-PWMpksShqzXp1evmh3ZHyLlJX4_QFuGVS6Gd_rV7TYJPxUftyjEU3HrGklF8PgE0d5XzVIhKRl6iMAGfiiXM7lU64KGuRv?width=1692&height=487&cropmode=none" />
@@ -62,7 +77,7 @@ const convertToTable = yourData.map((item) => {
       id: item.id,
       rdvStart: moment(item.otherKeyStart).format(),
       rdvEnd: moment(item.otherKeyEnd).format(),
-      assign: "equipe 1",
+      assign: modalTeamValue !== null ? modalTeamValue : null ,
       name: item.lastName,
       cp: item.address ,
     };

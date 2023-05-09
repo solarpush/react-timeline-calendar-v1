@@ -10,6 +10,7 @@ import {
   Paper,
   Radio,
   RadioGroup,
+  Button
 } from "@mui/material";
 import moment from "moment";
 import React from "react";
@@ -20,6 +21,7 @@ const TimeLine = ({
   list,
   rdvTable,
   clickRdvFunction,
+  functionAssign,
   colorSticker,
   colorTeam,
 }) => {
@@ -32,7 +34,7 @@ const TimeLine = ({
     }
     return times;
   }
-  const hours = generateTimeList();
+  const hourStart = generateTimeList();
   const rdv = rdvTable.map((rdv) => {
     const rdvStart = moment.utc(rdv.rdvStart);
     const rdvEnd = moment.utc(rdv.rdvEnd);
@@ -58,14 +60,14 @@ const TimeLine = ({
     return newTable;
   });
 
-  const [hoursCalc, setHoursCalc] = useState(() => {
-    return hours.map((hour) => moment(hour, "HH:mm").format());
+  const [hoursCalcStart, setHoursCalcStart] = useState(() => {
+    return hourStart.map((hour) => moment(hour, "HH:mm").format());
   });
   const [timeToDisplay, setTimeToDisplay] = useState({
     name: "hours",
-    data: hours,
+    data: hourStart,
     display: moment(today).format("ddd DD MMMM"),
-    dataCalc: hoursCalc,
+    dataCalc: hoursCalcStart,
   });
 
   const [rowHeight, setRowHeight] = useState(120);
@@ -74,12 +76,78 @@ const TimeLine = ({
   const [viewType, setViewType] = useState("day");
   const daysInMonth = moment(today).daysInMonth();
   const monthInYear = 12;
+
+  const firstHoursOfDay = moment(today).startOf("day");
   const firstDayOfMonth = moment(today).startOf("month");
   const firstMonthOfYear = moment(today).startOf("Year");
+  const [hours, setHours] = useState([]);
   const [days, setDays] = useState([]);
   const [month, setMonth] = useState([]);
+  const [hoursCalc, setHoursCalc] = useState([]);
   const [daysCalc, setDaysCalc] = useState([]);
   const [monthCalc, setMonthCalc] = useState([]);
+  useEffect(() => {
+    let hours = [];
+    let days = [];
+    let month = [];
+    let hoursCalc = [];
+    let daysCalc = [];
+    let monthCalc = [];
+    for (let i = 0; i < 23; i++) {
+      const heure = moment(firstHoursOfDay).add(i, "h");
+      const format = moment(heure._d).format("HH:mm");
+      const calc = moment(heure._d).format();
+      hours.push(format);
+      hoursCalc.push(calc);
+    }
+    for (let i = 0; i < daysInMonth; i++) {
+      const date = moment(firstDayOfMonth).add(i, "days");
+      const format = moment(date._d).format("ddd DD");
+      const calc = moment(date._d).format();
+      days.push(format);
+      daysCalc.push(calc);
+    }
+
+    for (let i = 0; i < monthInYear; i++) {
+      const date = moment(firstMonthOfYear).add(i, "month");
+      const calc = moment(date._d).format();
+      const format = moment(date._d).format("MMM YYYY");
+      month.push(format);
+      monthCalc.push(calc);
+    }
+    setHours(hours);
+    setDays(days);
+    setMonth(month);
+    setHoursCalc(hoursCalc);
+    setDaysCalc(daysCalc);
+    setMonthCalc(monthCalc);
+    setTimeToDisplay((state) => {
+      let res;
+      if (state.name === "hours") {
+        res = {
+          name: state.name,
+          data: hours,
+          display: moment(today).format("ddd DD MMMM"),
+          dataCalc: hoursCalc,
+        };
+      } else if (state.name === "days") {
+        res = {
+          name: state.name,
+          data: days,
+          display: moment(today).format("MMMM YYYY"),
+          dataCalc: daysCalc,
+        };
+      } else if (state.name === "month") {
+        res = {
+          name: state.name,
+          data: month,
+          display: moment(today).format("YYYY"),
+          dataCalc: monthCalc,
+        };
+      }
+      return res;
+    });
+  }, [today]);
   const changeZoom = (direction) => {
     direction === "up" && widthView < 6400
       ? setWidthView((state) => state + 800)
@@ -115,6 +183,7 @@ const TimeLine = ({
         : (result = moment(today).format());
     }
     setToday(result);
+
     if (direction === "down") {
       timeToDisplay.name === "hours"
         ? (newHoursCalc = hoursCalc.map((hour) =>
@@ -146,6 +215,7 @@ const TimeLine = ({
     }
     setHoursCalc(newHoursCalc);
   };
+  const rdvNotAssign = rdv.filter((f) => f.assign === null);
   useEffect(() => {
     const background = colorSticker
       ? colorSticker
@@ -154,8 +224,9 @@ const TimeLine = ({
     const radius = "20px";
     //pour chaques rdv
 
-    for (let index = 0; index < rdv.length; index++) {
-      const i = rdv[index];
+    let rdvAssign = rdv.filter((f) => f.assign !== null);
+    for (let index = 0; index < rdvAssign.length; index++) {
+      const i = rdvAssign[index];
 
       // TimeOfRdv calcul de la durée du rdv renvoie une valeur en nombre de fraction afficher à l'écran
       const timeOfRdv = () => {
@@ -273,7 +344,7 @@ const TimeLine = ({
           }
         }
         if (newDivELement !== null && everCreate === null) {
-          const rdvWidth = (widthView / separateNumber) * timeOfRdv();
+          const rdvWidth = (widthView / separateNumber) * timeOfRdv() - 10;
           newDivELement.addEventListener("mouseover", () => {
             newDivELement.style.setProperty("z-index", 2);
           });
@@ -300,8 +371,11 @@ const TimeLine = ({
           newDivELement.style.background = background;
           newDivELement.style.boxShadow = shadow;
           newDivELement.style.margin = "0px";
+          newDivELement.style.padding = "5px";
           newDivELement.style.textAlign = "center";
-
+          if (clickRdvFunction) {
+            newDivELement.style.cursor = "pointer";
+          }
           rdvTitle.textContent = i.name + " , " + i.cp;
           rdvTitle.style.zIndex = 3;
           rdvTitle.style.color = "rgb(0, 13, 48)";
@@ -316,11 +390,12 @@ const TimeLine = ({
           div.addEventListener("mouseout", () => {
             div.style.setProperty("z-index", 1);
           });
-          const rdvWidth = (widthView / separateNumber) * timeOfRdv();
+          const rdvWidth = (widthView / separateNumber) * timeOfRdv() - 10;
           div.style.borderRadius = radius;
           div.style.background = background;
           div.style.boxShadow = shadow;
           div.style.margin = "0px";
+          div.style.padding = "5px";
           div.style.width = `${rdvWidth}px`;
           div.style.height = "60%";
           div.style.minHeight = "35px";
@@ -347,59 +422,68 @@ const TimeLine = ({
     rdv,
   ]);
 
-  useEffect(() => {
-    let days = [];
-    let month = [];
-    let daysCalc = [];
-    let monthCalc = [];
-    for (let i = 0; i < daysInMonth; i++) {
-      const date = moment(firstDayOfMonth).add(i, "days");
-      const format = moment(date._d).format("ddd DD");
-      const calc = moment(date._d).format();
-      days.push(format);
-      daysCalc.push(calc);
+  const changeViewType = (newValue) => {
+    if (newValue === "day") {
+      setTimeToDisplay({
+        name: "hours",
+        data: hours,
+        display: moment(today).format("ddd DD MMMM"),
+        dataCalc: hoursCalc,
+      });
+      setWidthView(2000);
     }
+    if (newValue === "month") {
+      setTimeToDisplay({
+        name: "days",
+        data: days,
+        display: moment(today).format("MMMM YYYY"),
+        dataCalc: daysCalc,
+      });
+      setWidthView(3600);
+    }
+    if (newValue === "year") {
+      setTimeToDisplay({
+        name: "month",
+        data: month,
+        display: moment(today).format("YYYY"),
+        dataCalc: monthCalc,
+      });
+      setWidthView(2000);
+    }
+    setViewType(newValue);
+  };
 
-    for (let i = 0; i < monthInYear; i++) {
-      const date = moment(firstMonthOfYear).add(i, "month");
-      const calc = moment(date._d).format();
-      const format = moment(date._d).format("MMM YYYY");
-      month.push(format);
-      monthCalc.push(calc);
-    }
-    setDays(days);
-    setMonth(month);
-    setDaysCalc(daysCalc);
-    setMonthCalc(monthCalc);
-    setTimeToDisplay((state) => {
-      let res;
-      if (state.name === "hours") {
-        res = {
-          name: state.name,
-          data: hours,
-          display: moment(today).format("ddd DD MMMM"),
-          dataCalc: hoursCalc,
-        };
-      } else if (state.name === "days") {
-        res = {
-          name: state.name,
-          data: days,
-          display: moment(today).format("MMMM YYYY"),
-          dataCalc: daysCalc,
-        };
-      } else if (state.name === "month") {
-        res = {
-          name: state.name,
-          data: month,
-          display: moment(today).format("YYYY"),
-          dataCalc: monthCalc,
-        };
-      }
-      return res;
-    });
-  }, [today, hoursCalc]);
   return (
     <Paper elevation={16} className="timeLinePaperContentContainer">
+      {rdvNotAssign.length > 0 && (
+        <div id="notAssign">
+          <h3>Rendez-vous non assignés</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+            {rdvNotAssign.map((item) => (
+              <div key={item.id} style={{ margin: "5px" }}>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={() =>
+                    functionAssign
+                      ? functionAssign(item.id)
+                      : console.log("Argument functionAssign isn't declared")
+                  }
+                >
+                  {item.name +
+                    " " +
+                    moment(item.rdvStart).format(
+                      "DD / MM / YYYY [à] HH[:]mm "
+                    ) +
+                    " durée de : " +
+                    moment(item.rdvEnd).diff(item.rdvStart, "h") +
+                    " Heures"}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <div
         style={{
           display: "flex",
@@ -413,34 +497,7 @@ const TimeLine = ({
           name="position"
           value={viewType}
           onChange={(e, newValue) => {
-            if (newValue === "day") {
-              setTimeToDisplay({
-                name: "hours",
-                data: hours,
-                display: moment(today).format("ddd DD MMMM"),
-                dataCalc: hoursCalc,
-              });
-              setWidthView(2000);
-            }
-            if (newValue === "month") {
-              setTimeToDisplay({
-                name: "days",
-                data: days,
-                display: moment(today).format("MMMM YYYY"),
-                dataCalc: daysCalc,
-              });
-              setWidthView(3600);
-            }
-            if (newValue === "year") {
-              setTimeToDisplay({
-                name: "month",
-                data: month,
-                display: moment(today).format("YYYY"),
-                dataCalc: monthCalc,
-              });
-              setWidthView(2000);
-            }
-            setViewType(newValue);
+            changeViewType(newValue);
           }}
         >
           <FormControlLabel
@@ -554,8 +611,22 @@ const TimeLine = ({
               <div
                 key={index}
                 className="hoursInTop"
+                onClick={() => {
+                  if (timeToDisplay.name === "days") {
+                    setToday(timeToDisplay.dataCalc[index]);
+                    changeViewType("day");
+                  } else if (timeToDisplay.name === "month") {
+                    setToday(timeToDisplay.dataCalc[index]);
+                    changeViewType("month");
+                  }
+                }}
                 style={{
                   gridColumn: "span 2",
+                  cursor:
+                    timeToDisplay.name === "days" ||
+                    timeToDisplay.name === "month"
+                      ? "pointer"
+                      : "auto",
                 }}
               >
                 <Divider orientation="vertical" />
