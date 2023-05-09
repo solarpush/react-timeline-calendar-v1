@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "babel src --out-dir dist --copy-files",
-    "total": "npm run build && git add . && git commit -m \"update09/05\" && git push origin main && npm publish"
+    "total": "npm run build && git add . && git commit -m \"update09/05\" && git push -u origin main && npm publish"
   },
   "keywords": [
     "react",
