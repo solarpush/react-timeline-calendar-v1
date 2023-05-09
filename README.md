@@ -57,7 +57,7 @@ const rdvTable = [
 // clickRdvFunction= return id of rdvTable item
 // colorSticker= string
 // colorTeam= string
-<AdminTimeLine
+<TimeLine
             list={list}
             rdvTable={rdvTable}
             clickRdvFunction={clickRdvFunction}
