@@ -9,6 +9,7 @@ npm i react-timeline-calendar-v1
 
 ``` js
 import TimeLine from 'react-timeline-calendar-v1';
+import moment from 'moment';
 
 const list = [{ name: "equipe 1" }, { name: "equipe 2" }];
 const rdvTable = [
@@ -28,14 +29,28 @@ const rdvTable = [
       name: "Mme Durand",
       cp: "69870",
     },
-    {
-      id: "15513d31de55",
-      rdvStart: "2023-05-06T14:00:00+02:00",
-      rdvEnd: moment("2023-05-06T14:00:00+02:00").add(3, "h").format(),
-      assign: null,
-      name: "Mme Durand",
-      cp: "69870",
-    },
+  ];
+  // sample if same color list for team and rdv but you can attributes other color (i optional default color's exist in TimeLine)
+  const colorList = [
+    "#FF6633",
+    "#FFB399",
+    "#FF33FF",
+    "#FFFF99",
+    "#00B3E6",
+    "#E6B333",
+    "#3366E6",
+    "#999966",
+    "#809980",
+    "#E6FF80",
+    "#1AFF33",
+    "#999933",
+    "#FF3380",
+    "#CCCC00",
+    "#66E64D",
+    "#4D80CC",
+    "#FF4D4D",
+    "#99E6E6",
+    "#6666FF",
   ];
 
   //sample of function 
@@ -47,11 +62,19 @@ const rdvTable = [
   function functionAssign(id) {
     console.log(id)
   }
+  
 
   ```
 
   ```jsx
-<TimeLine list={list} rdvTable={rdvTable} />
+
+  //minimal use
+<TimeLine 
+list={list} 
+rdvTable={rdvTable}
+colorSticker={colorList}
+colorTeam={colorList}
+ />
 
 //optional argument : 
 // clickRdvFunction= return id of rdvTable item
@@ -60,14 +83,15 @@ const rdvTable = [
 <TimeLine
             list={list}
             rdvTable={rdvTable}
+            colorSticker={colorList}
+            colorTeam={colorList}
+            //optionnal function
             clickRdvFunction={clickRdvFunction}
             functionAssign={functionAssign}
-            colorSticker={"rgb(21, 253, 188)"}
-            colorTeam={"rgb(241, 203, 18)"}
           />
 ```
 
-<img src="https://bnz07pap001files.storage.live.com/y4m7Ecd5KK-T7tbB7H4yX8FdozPcBF5OClPTbJuxMGKOvpVBn9REPlRgtTBs0xSvSmTKoz9ERMrREZiRBf-kJo023AYx68Itor6I-PWMpksShqzXp1evmh3ZHyLlJX4_QFuGVS6Gd_rV7TYJPxUftyjEU3HrGklF8PgE0d5XzVIhKRl6iMAGfiiXM7lU64KGuRv?width=1692&height=487&cropmode=none" />
+<img src="https://bnz07pap001files.storage.live.com/y4mzTNchPpNulrjewodsvEDcyjdtp-Ao7JolOG7JCmXkc7MkEEbLcP96pdBZVxCtXcYJyzhAf1XOCbAsCEIHIhbWzctpUWH8HT8My5qqG19ivV2KXyDiBnGZYETwWws0hdj0vLTmKfub5dJsFQbPrD1qn7OLaOp_X3q5kNbh1sAW82gX1cfmi72kaNYRpmnFEYp?width=1554&height=695&cropmode=none" />
 
 ```js
 // Sample of convert function for other Data to use in component 
@@ -87,14 +111,21 @@ const convertToTable = yourData.map((item) => {
 <TimeLine list={list} rdvTable={convertToTable} />
 
 ```
-<p>For next minor update add parameters: 
+<p>actual 1.0.0 normaly break code, you can exchange to github issue.
+
+new in 1.0.0 if years or month view you can click action for change view 
+year => month
+month => day
+
+In 1.0.0 accept large table of data. <br/>
+
+You can now use the 'cp' key for inject any text in the rdv sticker or use empty string for useless this propriety.
+</p>
 <ul>
 <li >languages </li>
 <li >defaultWidthView: number </li>
 <li >defaultheightRow: number </li>
 </ul>
-You can now use the 'cp' key for inject any text in the rdv sticker or use empty string for useless this propriety.
-</p>
 <br/>
 <h5><a href="https://playcode.io/1465220">Try it in playground </a> </h5>
 <br/>

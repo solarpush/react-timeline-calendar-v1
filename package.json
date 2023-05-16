@@ -1,6 +1,6 @@
 {
   "name": "react-timeline-calendar-v1",
-  "version": "0.2.21",
+  "version": "1.0.0",
   "description": "react-timeline",
   "main": "dist/index.js",
   "files": [
@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "babel src --out-dir dist --copy-files",
-    "total": "npm run build && git add . && git commit -m \"update09/05/23\" && git push -u origin main && npm publish"
+    "total": "npm run build && git add . && git commit -m \"update1.0.0\" && git push -u origin main && npm publish"
   },
   "keywords": [
     "react",
